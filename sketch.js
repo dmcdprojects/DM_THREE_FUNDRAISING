@@ -12,20 +12,19 @@ const pulseDuration = totalDuration - growDuration - shrinkDuration;
 
 function setup() {
   let cnv = createCanvas(200, 200);
-  cnv.style('background', 'transparent'); // garante fundo transparente no canvas
+  cnv.style('background', 'transparent');
   strokeWeight(1.2);
   noFill();
 }
 
 function draw() {
-  // background(0); // removido para manter o fundo transparente
-  clear(); // limpa o canvas com transparência
+  clear(); // mantém fundo transparente
   translate(width / 2, height / 2);
-  stroke(255); // branco
+  stroke(255); // cor branca
 
   let cycleTime = t % totalDuration;
 
-  drawPulsingPoint();
+  drawSimplePulsingPoint(); // versão simplificada
 
   if (cycleTime < growDuration) {
     let progress = cycleTime / growDuration;
@@ -40,26 +39,24 @@ function draw() {
   t++;
 }
 
-function drawPulsingPoint() {
+function drawSimplePulsingPoint() {
   noStroke();
-  let syncPulse = sin(t * pulseSpeed);
-  let pulse = 100 + 100 * syncPulse;
-  fill(255, pulse);
-  ellipse(0, 0, 14);
+  fill(255); // ponto branco fixo
+  ellipse(0, 0, 10); // menor, sem brilho nem animação
 
   noFill();
-  stroke(255, 40 + 40 * syncPulse);
+  stroke(255);
   strokeWeight(1.2);
-  ellipse(0, 0, 40 + 10 * syncPulse);
+  ellipse(0, 0, 30); // anel externo fixo para destaque
 }
 
 function drawGrowingCircles(progress) {
   noFill();
   strokeWeight(1.2);
+  stroke(255); // sem opacidade
   for (let i = 1; i <= maxCircles; i++) {
     let targetRadius = baseRadius * i;
     let r = targetRadius * progress;
-    stroke(255, map(i, 1, maxCircles, 220, 50) * progress);
     ellipse(0, 0, r * 2);
   }
 }
@@ -67,44 +64,14 @@ function drawGrowingCircles(progress) {
 function drawAnimatedCircles() {
   noFill();
   strokeWeight(1.2);
+  stroke(255); // todas as linhas 100% visíveis
   push();
   rotate(0.01 * sin(t * 0.01));
   let syncPulse = sin(t * pulseSpeed);
   for (let i = 1; i <= maxCircles; i++) {
     let offset = syncPulse * 8;
     let r = baseRadius * i + offset;
-    stroke(255, map(i, 1, maxCircles, 220, 50));
     ellipse(0, 0, r * 2);
   }
   pop();
-}
-
-function drawPulsingPoint() {
-  // Ativa modo de blend para brilho
-  blendMode(ADD);
-
-  // Sincroniza intensidade do brilho com a pulsação
-  let syncPulse = sin(t * pulseSpeed);
-  let pulse = 100 + 100 * syncPulse;
-
-  // Camada de brilho difuso ao redor
-  noStroke();
-  for (let i = 0; i < 4; i++) {
-    let alpha = map(i, 0, 3, 50, 5) * syncPulse;
-    fill(255, alpha);
-    ellipse(0, 0, 30 + i * 15); // camadas circulares aumentando de tamanho
-  }
-
-  // Núcleo mais brilhante
-  fill(255, 200 + 55 * syncPulse);
-  ellipse(0, 0, 12);
-
-  // Anel externo com stroke leve
-  noFill();
-  stroke(100, 60 + 40 * syncPulse);
-  strokeWeight(1.2);
-  ellipse(0, 0, 40 + 10 * syncPulse);
-
-  // Restaura modo normal para o restante do desenho
-  blendMode(BLEND);
 }
